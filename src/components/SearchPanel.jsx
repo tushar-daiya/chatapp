@@ -33,7 +33,6 @@ const SearchPanel = () => {
   }, [userData.friends]);
 
   const handleClick = async (e) => {
-    console.log(e.uid);
     const tempId =
       userData.uid > e.uid ? userData.uid + e.uid : e.uid + userData.uid;
     setCombinedId(tempId);

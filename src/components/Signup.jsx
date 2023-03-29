@@ -22,7 +22,6 @@ const Signup = () => {
   const [error, setError] = useState("");
   const signup = async (e) => {
     e.preventDefault();
-    console.log("hello")
     setLoading(true);
     setError("");
     const displayName = form.firstName.trim() + " " + form.lastName.trim();
