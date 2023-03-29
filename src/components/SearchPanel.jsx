@@ -11,8 +11,7 @@ const SearchPanel = () => {
   const { hits } = useHits();
   const [friendDetails, setFriendDetails] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {  setCombinedId, setCurrentFriend } =
-    useContext(FriendContext);
+  const { setCombinedId, setCurrentFriend } = useContext(FriendContext);
 
   useEffect(() => {
     const fetchFriendDetails = async () => {
@@ -64,24 +63,26 @@ const SearchPanel = () => {
       <div className="friends overflow-y-auto mt-2 text-black flex gap-4 flex-col">
         {query ? (
           <>
-            {hits.map((e) => {
-              return (
-                <div
-                  key={e.uid}
-                  onClick={() => handleClick(e)}
-                  className="flex cursor-pointer hover:shadow-xl items-center px-4 py-2 h-15 border-b-slate-700 border-b-[1px]"
-                >
-                  <img
-                    src={e.photoURL}
-                    alt=""
-                    className="w-10 h-10 rounded-full mr-4"
-                  />
-                  <div>
-                    <p>{e.name}</p>
+            {hits
+              .filter((e) => e.uid !== userData.uid)
+              .map((e) => {
+                return (
+                  <div
+                    key={e.uid}
+                    onClick={() => handleClick(e)}
+                    className="flex cursor-pointer hover:shadow-xl items-center px-4 py-2 h-15 border-b-slate-700 border-b-[1px]"
+                  >
+                    <img
+                      src={e.photoURL}
+                      alt=""
+                      className="w-10 h-10 rounded-full mr-4"
+                    />
+                    <div>
+                      <p>{e.name}</p>
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </>
         ) : loading ? (
           <div className="w-full h-full flex items-center justify-center">

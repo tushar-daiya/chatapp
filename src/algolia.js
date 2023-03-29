@@ -6,8 +6,8 @@ import { app } from "./firebase/firebase";
 import { onSnapshot } from "firebase/firestore";
 const db = getFirestore(app);
 export const algoliaClient = algoliasearch(
-  "OUHJOU0JNR",
-  "32d969d9bd35734e550248333cb56244"
+  process.env.REACT_APP_ALGOLIA_KEY,
+  process.env.REACT_APP_ALGOLIA_ID
 );
 export const algoliaIndex = algoliaClient.initIndex("ChatApp");
 export const useAlgoliaIntegration = () => {
