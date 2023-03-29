@@ -2,10 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+.searchpanel{
+    height: calc(100% - (80px));
+}
+
 .friends{
-    height: calc(100% - (128px));
+    height: calc(100% - (56px));
 
 }
 .messages{
     height:calc(100% - (128px));
+}
+.message1{
+    padding:5px 10px ;
+    background: red;
+    align-self: end;
+    border-radius: 10px 0px 10px 10px;
+    overflow-wrap: break-word;
+    max-width: 80%;
+    width: fit-content;
+    display: flex;
+}
+.message2{
+    display: flex;
+    padding:5px 10px ;
+    background: red;
+    border-radius: 0px 10px 10px 10px;
+    overflow-wrap: break-word;
+    max-width: 80%;
+    width: fit-content;
+}
+.time{
+    font-size: 13px;
+    text-align: end;
+    align-self: flex-end;
+    color: #d2cbcb;
+
 }
