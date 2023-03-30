@@ -1,13 +1,7 @@
 import "./index.css";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
-import {
-  Routes,
-  Route,
-  BrowserRouter,
-  Navigate,
-  
-} from "react-router-dom";
+import { Routes, Route, BrowserRouter, Navigate } from "react-router-dom";
 import Home from "./components/Home";
 import { useContext } from "react";
 import { AuthContext } from "./context/authContext";
@@ -16,23 +10,13 @@ function App() {
   useAlgoliaIntegration();
   const { currentUser } = useContext(AuthContext);
 
-  const ProtectedHomeRoute = ({ children }) => {
-    if (!currentUser) {
-      return <Navigate to="/login" />;
-    }
-
-    return children;
-  };
-  const ProtectedRoute = ({ children }) => {
-    if (currentUser) {
-      return <Navigate to="/" />;
-    }
-
-    return children;
-  };
+  const ProtectedHomeRoute = ({ children }) =>
+    !currentUser ? <Navigate to="/login" /> : children;
+  const ProtectedRoute = ({ children }) =>
+    currentUser ? <Navigate to="/" /> : children;
 
   return (
-    <div className="App box-border bg-[#0A2647] h-screen">
+    <div className="App box-border bg-[#0A2647] min-h-screen">
       <BrowserRouter>
         <Routes>
           <Route path="/">

@@ -43,18 +43,6 @@ const UserChat = () => {
     if (msg.trim().length > 0) {
       const userRef = doc(db, "users", currentUser.uid);
       const friendRef = doc(db, "users", currentFriend.uid);
-      if (messages.length === 0) {
-        try {
-          await updateDoc(userRef, {
-            friends: arrayUnion(currentFriend.uid),
-          });
-          await updateDoc(friendRef, {
-            friends: arrayUnion(currentUser.uid),
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      }
       const chatDocRef = doc(db, "chats", combinedId);
       const recentuserchatRef = doc(db, "userChats", currentUser.uid);
       const recentfrndRef = doc(db, "userChats", currentFriend.uid);
@@ -64,20 +52,30 @@ const UserChat = () => {
         timestamp: new Date(),
       };
 
+      try {
+        await Promise.all([
+          updateDoc(userRef, { friends: arrayUnion(currentFriend.uid) }),
+          updateDoc(friendRef, { friends: arrayUnion(currentUser.uid) }),
+        ]);
+      } catch (error) {
+        console.log(error);
+      }
+
       await updateDoc(chatDocRef, {
         messages: arrayUnion(newMessage),
       });
-      try{
-      await updateDoc(recentuserchatRef, {
-        [currentFriend.uid]: newMessage,
-      });}
-      catch(error){
-        console.log(error)
+
+      try {
+        await updateDoc(recentuserchatRef, {
+          [currentFriend.uid]: newMessage,
+        });
+      } catch (error) {
+        console.log(error);
       }
+
       await updateDoc(recentfrndRef, {
         [currentUser.uid]: newMessage,
       });
-      setMsg(""); // clear the input field after sending message
     }
   };
   return (

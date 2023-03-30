@@ -1,30 +1,37 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { auth, db } from "../firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import Loading from "../components/Loading";
+
 export const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const getData = async (user) => {
-    const userRef = doc(db, "users", user.uid);
-    onSnapshot(userRef, (userSnap) => {
-      setUserData(userSnap.data());
-      setLoading(false);
-    });
-  };
   useEffect(() => {
-    const unsubAuth = onAuthStateChanged(auth, async(user) => {
-      setLoading(true);
+    const unsubAuth = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
-        await getData(user);
-      } else {
-        setLoading(false);
+        try {
+          const userRef = doc(db, "users", user.uid);
+          const userSnap = await getDoc(userRef);
+          setUserData(userSnap.data());
+
+          // subscribe to changes on user's document
+          const unsubscribe = onSnapshot(userRef, (doc) => {
+            setUserData(doc.data());
+
+          });
+        } catch (error) {
+          console.log("Error fetching user data:", error);
+        }
       }
+      else{
+        setUserData(null);
+      }
+      setLoading(false);
     });
 
     return () => {
@@ -34,7 +41,7 @@ export const AuthContextProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ currentUser, userData }}>
-      {loading ? <Loading />:children}
+      {loading ? <Loading /> : children}
     </AuthContext.Provider>
   );
 };
