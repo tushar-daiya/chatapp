@@ -17,11 +17,11 @@ export const AuthContextProvider = ({ children }) => {
     });
   };
   useEffect(() => {
-    const unsubAuth = onAuthStateChanged(auth, (user) => {
+    const unsubAuth = onAuthStateChanged(auth, async(user) => {
       setLoading(true);
       setCurrentUser(user);
       if (user) {
-        getData(user);
+        await getData(user);
       } else {
         setLoading(false);
       }

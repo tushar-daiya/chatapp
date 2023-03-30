@@ -3,35 +3,57 @@ import { CircularProgress, TextField } from "@mui/material";
 import { AuthContext } from "../context/authContext";
 import { useHits, useSearchBox } from "react-instantsearch-hooks";
 import { db } from "../firebase/firebase";
-import { collection, doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  onSnapshot,
+} from "firebase/firestore";
 import { FriendContext } from "../context/friendContext";
 const SearchPanel = () => {
-  const { userData } = useContext(AuthContext);
+  const { userData, currentUser } = useContext(AuthContext);
   const { query, refine } = useSearchBox();
   const { hits } = useHits();
   const [friendDetails, setFriendDetails] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [recentchat, setRecentchat] = useState({});
   const { setCombinedId, setCurrentFriend } = useContext(FriendContext);
+  const uid = "UdkZcYuasBPdOGEZgkspgtA544z2";
 
   useEffect(() => {
+    setLoading(true);
     const fetchFriendDetails = async () => {
-      setLoading(true);
       const details = [];
-      for (const uid of userData.friends) {
-        const userRef = doc(collection(db, "users"), uid);
-        const userDoc = await getDoc(userRef);
-        if (userDoc.exists()) {
-          details.push(userDoc.data());
-        } else {
-          console.log(`User with uid ${uid} does not exist`);
+      if (userData.friends.length > 0) {
+        for (const uid of userData.friends) {
+          const userRef = doc(collection(db, "users"), uid);
+          const userDoc = await getDoc(userRef);
+          if (userDoc.exists()) {
+            details.push(userDoc.data());
+          } else {
+            console.log(`User with uid ${uid} does not exist`);
+          }
         }
       }
       setFriendDetails(details);
-      setLoading(false);
     };
     fetchFriendDetails();
-  }, [userData.friends]);
 
+    const unsubscribe = onSnapshot(
+      doc(db, "userChats", currentUser.uid),
+      (doc) => {
+        const tempdata = doc.data();
+        setRecentchat(tempdata);
+      }
+    );
+
+    setLoading(false);
+
+    return () => {
+      unsubscribe();
+    };
+  }, [userData]);
   const handleClick = async (e) => {
     const tempId =
       userData.uid > e.uid ? userData.uid + e.uid : e.uid + userData.uid;
@@ -78,6 +100,9 @@ const SearchPanel = () => {
                     />
                     <div>
                       <p>{e.name}</p>
+                      {recentchat[e.uid] && (
+                        <span>{recentchat[e.uid].text}</span>
+                      )}
                     </div>
                   </div>
                 );
@@ -102,6 +127,7 @@ const SearchPanel = () => {
                 />
                 <div>
                   <p>{e.name}</p>
+                  {recentchat[e.uid] && <span>{recentchat[e.uid].text}</span>}
                 </div>
               </div>
             );

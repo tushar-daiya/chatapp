@@ -6,8 +6,8 @@ import AttachmentIcon from "@mui/icons-material/Attachment";
 import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
 import { db } from "../firebase/firebase";
-import {  doc, onSnapshot } from "firebase/firestore";
-import { updateDoc,  arrayUnion } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
+import { updateDoc, arrayUnion } from "firebase/firestore";
 
 import { FriendContext } from "../context/friendContext";
 import { AuthContext } from "../context/authContext";
@@ -40,9 +40,9 @@ const UserChat = () => {
     };
   }, [combinedId]);
   const sendMessage = async (msg) => {
-    if(msg.trim().length>0){
-    const userRef = doc(db, "users", currentUser.uid);
-    const friendRef = doc(db, "users", currentFriend.uid);
+    if (msg.trim().length > 0) {
+      const userRef = doc(db, "users", currentUser.uid);
+      const friendRef = doc(db, "users", currentFriend.uid);
       if (messages.length === 0) {
         try {
           await updateDoc(userRef, {
@@ -56,19 +56,30 @@ const UserChat = () => {
         }
       }
       const chatDocRef = doc(db, "chats", combinedId);
+      const recentuserchatRef = doc(db, "userChats", currentUser.uid);
+      const recentfrndRef = doc(db, "userChats", currentFriend.uid);
       const newMessage = {
         text: msg,
         sender: currentUser.uid,
         timestamp: new Date(),
       };
-      
+
       await updateDoc(chatDocRef, {
         messages: arrayUnion(newMessage),
       });
-      
+      try{
+      await updateDoc(recentuserchatRef, {
+        [currentFriend.uid]: newMessage,
+      });}
+      catch(error){
+        console.log(error)
+      }
+      await updateDoc(recentfrndRef, {
+        [currentUser.uid]: newMessage,
+      });
       setMsg(""); // clear the input field after sending message
     }
-    };
+  };
   return (
     <div className="w-2/3 ">
       <div className="text-xl text-white h-16 bg-[#2C74B3] p-4 flex items-center  justify-between">
