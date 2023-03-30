@@ -20,10 +20,11 @@ const Login = () => {
       await signInWithEmailAndPassword(auth, form.email, form.password);
       navigate('/')
     } catch (error) {
-      setError(error.message);
+      setError(error.code);
     }
     setLoading(false);
   };
+  
   return (
     <div className=" min-h-screen flex  items-center justify-center">
       <div className="flex flex-col gap-6 bg-white p-10 rounded-xl">

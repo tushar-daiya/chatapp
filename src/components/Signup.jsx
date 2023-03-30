@@ -34,36 +34,37 @@ const Signup = () => {
 
       const storageRef = ref(storage, res.user.uid);
 
-      await uploadBytesResumable(storageRef, form.image).then(() => {
-        getDownloadURL(storageRef).then(async (downloadURL) => {
-          try {
-            await updateProfile(res.user, {
-              displayName,
-              photoURL: downloadURL,
-            });
-            await setDoc(doc(db, "users", res.user.uid), {
+      await uploadBytesResumable(storageRef, form.image).then(async () => {
+        const downloadURL = await getDownloadURL(storageRef);
+        try {
+          await updateProfile(res.user, {
+            displayName,
+            photoURL: downloadURL,
+          });
+          await Promise.all([
+            setDoc(doc(db, "users", res.user.uid), {
               uid: res.user.uid,
               name: displayName,
               email: form.email,
               photoURL: downloadURL,
-              friends:[]
-            });
-
-            await setDoc(doc(db, "userChats", res.user.uid), {});
-            
-            navigate("/");
-          } catch (err) {
-            setError(err.code);
-            setLoading(false);
-          }
-        });
+              friends: [],
+            }),
+            setDoc(doc(db, "userChats", res.user.uid), {}),console.log("signup"),
+            navigate("/"),
+            console.log("signupfinished"),
+            setLoading(false)
+          ]);
+        } catch (err) {
+          setError(err.code);
+          setLoading(false)
+        }
       });
     } catch (error) {
       setError(error.code);
-      console.log(error)
+      setLoading(false)
     }
-    setLoading(false);
   };
+
   return (
     <div className=" min-h-screen flex  items-center justify-center">
       <div className="flex flex-col gap-6 bg-white p-10 rounded-xl">
@@ -113,7 +114,7 @@ const Signup = () => {
                 onChange={(e) =>
                   setForm({
                     ...form,
-                    image:e.target.files[0],
+                    image: e.target.files[0],
                   })
                 }
                 accept="image/*"
@@ -126,7 +127,12 @@ const Signup = () => {
               <span className="align-center ml-3 text-lg font-semibold text-[#1976d2]">
                 Add an avatar
               </span>
-              {form.image && <img src={URL.createObjectURL(form.image)} className="h-8 ml-2" />}
+              {form.image && (
+                <img
+                  src={URL.createObjectURL(form.image)}
+                  className="h-8 ml-2"
+                />
+              )}
             </div>
           </label>
           <span>{error}</span>

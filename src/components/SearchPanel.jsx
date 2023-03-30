@@ -19,7 +19,7 @@ const SearchPanel = () => {
   const [loading, setLoading] = useState(true);
   const [recentchat, setRecentChat] = useState({});
   const { setCombinedId, setCurrentFriend } = useContext(FriendContext);
-
+const [activeId,setActiveId]=useState("");
   useEffect(() => {
     const fetchFriendDetails = async () => {
       try {
@@ -48,9 +48,10 @@ const SearchPanel = () => {
 
     fetchFriendDetails();
     return () => unsubscribe();
-  }, [userData, currentUser]);
+  }, [userData]);
 
   const handleClick = async (e) => {
+    setActiveId(e.uid);
     const tempId =
       userData.uid > e.uid ? userData.uid + e.uid : e.uid + userData.uid;
     setCombinedId(tempId);
@@ -69,6 +70,20 @@ const SearchPanel = () => {
   const handleSearch = (e) => {
     refine(e.target.value.trim());
   };
+  const sortedFriendDetails = friendDetails.sort((a, b) => {
+    const aRecentChat = recentchat[a.uid];
+    const bRecentChat = recentchat[b.uid];
+    if (!aRecentChat && !bRecentChat) {
+      return 0;
+    } else if (!aRecentChat) {
+      return 1;
+    } else if (!bRecentChat) {
+      return -1;
+    } else {
+      return bRecentChat.timestamp - aRecentChat.timestamp;
+    }
+  });
+
   return (
     <div className="m-2 searchpanel">
       <TextField
@@ -80,7 +95,7 @@ const SearchPanel = () => {
         value={query}
         onChange={handleSearch}
       />
-      <div className="friends overflow-y-auto mt-2 text-black flex gap-4 flex-col">
+      <div className="scrollContainer friends overflow-y-auto mt-2 text-black flex  flex-col">
         {query ? (
           <>
             {hits
@@ -90,7 +105,9 @@ const SearchPanel = () => {
                   <div
                     key={e.uid}
                     onClick={() => handleClick(e)}
-                    className="flex cursor-pointer hover:shadow-xl items-center px-4 py-2 h-15 border-b-slate-700 border-b-[1px]"
+                    className={`${
+                      e.uid === activeId ? "active" : ""
+                    } flex cursor-pointer hover:shadow-xl items-center px-4 py-2 h-15 border-b-slate-700 border-b-[1px]`}
                   >
                     <img
                       src={e.photoURL}
@@ -112,12 +129,14 @@ const SearchPanel = () => {
             <CircularProgress />
           </div>
         ) : (
-          friendDetails.map((e) => {
+          sortedFriendDetails.map((e) => {
             return (
               <div
                 key={e.uid}
                 onClick={() => handleClick(e)}
-                className="flex cursor-pointer hover:shadow-xl items-center px-4 py-2 h-15 border-b-slate-700 border-b-[1px]"
+                className={`${
+                  e.uid === activeId ? "active" : ""
+                } flex cursor-pointer hover:shadow-xl items-center px-4 py-2 h-15 border-b-slate-700 border-b-[1px]`}
               >
                 <img
                   src={e.photoURL}

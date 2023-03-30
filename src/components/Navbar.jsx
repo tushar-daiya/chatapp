@@ -1,17 +1,9 @@
 import React, { useContext } from "react";
 import { AuthContext } from "../context/authContext";
-import { signOut } from "firebase/auth";
-import { auth } from "../firebase/firebase";
-import { FriendContext } from "../context/friendContext";
-
+import Signout from './Signout'
 const Navbar = () => {
   const { currentUser } = useContext(AuthContext);
-  const { setCurrentFriend, setCombinedId } = useContext(FriendContext);
-  const logout = () => {
-    setCurrentFriend(null);
-    setCombinedId(null);
-    signOut(auth);
-  };
+  
   return (
     <div className="xl:text-xl md:text-lg text-sm text-white h-16 bg-[#205295] p-4 flex items-center  justify-between">
       <p className="text-2xl font-bold">ChatApp</p>
@@ -28,9 +20,7 @@ const Navbar = () => {
             {currentUser.displayName}
           </p>
         )}
-        <button onClick={logout} className="bg-blue-400 rounded-lg px-2 py-1">
-          Logout
-        </button>
+        <Signout/>
       </div>
     </div>
   );

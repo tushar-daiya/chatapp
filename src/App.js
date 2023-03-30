@@ -8,8 +8,7 @@ import { AuthContext } from "./context/authContext";
 import { useAlgoliaIntegration } from "./algolia";
 function App() {
   useAlgoliaIntegration();
-  const { currentUser } = useContext(AuthContext);
-
+  const { userData ,currentUser} = useContext(AuthContext);
   const ProtectedHomeRoute = ({ children }) =>
     !currentUser ? <Navigate to="/login" /> : children;
   const ProtectedRoute = ({ children }) =>
@@ -25,7 +24,7 @@ function App() {
               element={
                 <ProtectedHomeRoute>
                   <Home />
-                </ProtectedHomeRoute>
+                 </ProtectedHomeRoute>
               }
             />
             <Route
@@ -33,7 +32,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Login />
-                </ProtectedRoute>
+                 </ProtectedRoute>
               }
             />
             <Route
@@ -41,7 +40,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Signup />
-                </ProtectedRoute>
+                 </ProtectedRoute>
               }
             />
           </Route>

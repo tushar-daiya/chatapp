@@ -1,8 +1,7 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import CallIcon from "@mui/icons-material/Call";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import AttachmentIcon from "@mui/icons-material/Attachment";
 import TextField from "@mui/material/TextField";
 import SendIcon from "@mui/icons-material/Send";
 import { db } from "../firebase/firebase";
@@ -13,6 +12,7 @@ import { FriendContext } from "../context/friendContext";
 import { AuthContext } from "../context/authContext";
 
 const UserChat = () => {
+  const scrollRef = useRef(null);
   const getTimeString = (time) => {
     const timestamp =
       time.seconds * 1000 + Math.round(time.nanoseconds / 1000000);
@@ -39,6 +39,17 @@ const UserChat = () => {
       unsubscribe();
     };
   }, [combinedId]);
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+  const handleClick = (e) => {
+    if (e.key == "Enter") {
+      e.preventDefault();
+      sendMessage(msg);
+    }
+  };
   const sendMessage = async (msg) => {
     if (msg.trim().length > 0) {
       const userRef = doc(db, "users", currentUser.uid);
@@ -51,6 +62,7 @@ const UserChat = () => {
         sender: currentUser.uid,
         timestamp: new Date(),
       };
+      setMsg("");
 
       try {
         await Promise.all([
@@ -96,8 +108,11 @@ const UserChat = () => {
         </div>
       </div>
 
-      <div className="messages bg-gray-300">
-        <div className="w-full h-full flex flex-col gap-2 p-2">
+      <div className="messages  p-2 bg-gray-300">
+        <div
+          ref={scrollRef}
+          className="w-full scrollContainer overflow-y-auto h-full flex flex-col gap-2"
+        >
           {messages.length > 0 &&
             messages.map((message, index) =>
               message.sender === currentUser.uid ? (
@@ -121,6 +136,7 @@ const UserChat = () => {
       <div className="sendMessage bg-white flex items-center h-16">
         <div className="input flex items-center w-full mx-3 h-full ">
           <TextField
+            onKeyDown={handleClick}
             value={msg}
             onChange={(e) => setMsg(e.target.value)}
             className="w-full border-none"
@@ -131,10 +147,7 @@ const UserChat = () => {
             variant="standard"
           />
         </div>
-        <AttachmentIcon
-          fontSize="large"
-          className="mr-3 text-gray-800 w-8 -rotate-45"
-        />
+
         <SendIcon
           onClick={() => sendMessage(msg)}
           fontSize="large"

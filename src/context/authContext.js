@@ -12,32 +12,32 @@ export const AuthContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, async (user) => {
+      setLoading(true);
       setCurrentUser(user);
       if (user) {
         try {
           const userRef = doc(db, "users", user.uid);
           const userSnap = await getDoc(userRef);
           setUserData(userSnap.data());
-
-          // subscribe to changes on user's document
           const unsubscribe = onSnapshot(userRef, (doc) => {
             setUserData(doc.data());
-
+            console.log("hello")
+            setLoading(false);
           });
         } catch (error) {
           console.log("Error fetching user data:", error);
+          setLoading(false); // Also set loading to false here if there's an error
         }
-      }
-      else{
+      } else {
         setUserData(null);
+        setLoading(false); // And set loading to false here if there's no user
       }
-      setLoading(false);
     });
-
     return () => {
       unsubAuth();
     };
   }, []);
+  
 
   return (
     <AuthContext.Provider value={{ currentUser, userData }}>

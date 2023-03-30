@@ -2,7 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-
+.scrollContainer {
+    overflow: auto;
+  }
+  
+  .scrollContainer::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb{
+    background-color: #205295;
+    border-radius: 10px;
+    height: 2px;
+  }
+  .active{
+background-color: rgb(185, 187, 191);
+}
 
 .searchpanel{
     height: calc(100% - (80px));
