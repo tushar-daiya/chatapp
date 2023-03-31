@@ -14,9 +14,9 @@ https://friendfusion.vercel.app/
 
 ![App Screenshot](./screenshots/screenshot1.jpg)
 
-![App Screenshot](./screenshots/screenshot2.jpg)
+![App Screenshot](./screenshots/screenshot2.JPG)
 
-![App Screenshot](./screenshots/screenshot3.jpg)
+![App Screenshot](./screenshots/screenshot3.JPG)
 
 
 
