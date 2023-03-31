@@ -68,7 +68,7 @@ const Signup = () => {
   return (
     <div className=" min-h-screen flex  items-center justify-center">
       <div className="flex flex-col gap-6 bg-white p-10 rounded-xl">
-        <h1 className="title text-2xl font-bold text-center -mb-5">ChatApp</h1>
+        <h1 className="title text-2xl font-bold text-[#2B2D42] text-center -mb-5">ChatApp</h1>
         <h4 className="text-xl text-center text-gray-600 mb-2">Sign Up</h4>
         <form className="flex flex-col gap-6" onSubmit={signup}>
           <div className="name flex gap-2">
