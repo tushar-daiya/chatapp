@@ -15,7 +15,7 @@ function App() {
     currentUser ? <Navigate to="/" /> : children;
 
   return (
-    <div className="App box-border bg-[#0A2647] min-h-screen">
+    <div className="App box-border bg-[#2B2D42] min-h-screen">
       <BrowserRouter>
         <Routes>
           <Route path="/">

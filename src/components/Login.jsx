@@ -18,16 +18,16 @@ const Login = () => {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, form.email, form.password);
-      navigate('/')
+      navigate("/");
     } catch (error) {
       setError(error.code);
     }
     setLoading(false);
   };
-  
+
   return (
     <div className=" min-h-screen flex  items-center justify-center">
-      <div className="flex flex-col gap-6 bg-white p-10 rounded-xl">
+      <div className=" flex flex-col gap-6 bg-white   p-10 rounded-xl">
         <h1 className="title text-2xl font-bold text-center -mb-5">ChatApp</h1>
         <h4 className="text-xl text-center text-gray-600 mb-2">Login</h4>
         <form className="flex flex-col gap-6" onSubmit={login}>

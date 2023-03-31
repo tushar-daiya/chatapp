@@ -32,7 +32,7 @@ const logout = () => {
 
   return (
     <div>
-      <button onClick={handleClickOpen} className="hover:bg-[#194074] rounded-lg px-2 py-1">
+      <button onClick={handleClickOpen} className="hover:bg-[#2B2D42] rounded-lg px-2 py-1">
           Logout
         </button>
       <Dialog

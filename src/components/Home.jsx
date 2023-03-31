@@ -9,7 +9,7 @@ const Home = () => {
   return !userData ? (
     <Loading />
   ) : (
-    <div className="container text-white h-screen flex m-auto justify-center items-center">
+    <div className="container  h-screen flex m-auto justify-center items-center">
       <div className="flex w-full h-4/5 ">
         <Sidebar />
         <Chat />

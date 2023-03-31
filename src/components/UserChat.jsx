@@ -10,8 +10,10 @@ import { updateDoc, arrayUnion } from "firebase/firestore";
 
 import { FriendContext } from "../context/friendContext";
 import { AuthContext } from "../context/authContext";
+import { CircularProgress } from "@mui/material";
 
 const UserChat = () => {
+  
   const scrollRef = useRef(null);
   const getTimeString = (time) => {
     const timestamp =
@@ -26,10 +28,13 @@ const UserChat = () => {
   const { currentUser } = useContext(AuthContext);
   const [messages, setMessages] = useState([]);
   const [msg, setMsg] = useState("");
+  const [loading,setLoading]=useState(false);
   useEffect(() => {
+    setLoading(true);
     const unsubscribe = onSnapshot(doc(db, "chats", combinedId), (doc) => {
       if (doc.exists()) {
         setMessages(doc.data().messages);
+        setLoading(false);
       } else {
         console.log("No such document!");
       }
@@ -92,7 +97,7 @@ const UserChat = () => {
   };
   return (
     <div className="w-2/3 ">
-      <div className="text-xl text-white h-16 bg-[#2C74B3] p-4 flex items-center  justify-between">
+      <div className="text-xl text-white h-16 bg-[#D90429] p-4 flex items-center  justify-between">
         <div className="userDetails flex items-center">
           <img
             src={currentFriend.photoURL}
@@ -108,12 +113,13 @@ const UserChat = () => {
         </div>
       </div>
 
-      <div className="messages  p-2 bg-gray-300">
+      <div className="messages  p-2 bg-[#d8e2dc]">
         <div
           ref={scrollRef}
           className="w-full scrollContainer overflow-y-auto h-full flex flex-col gap-2"
         >
-          {messages.length > 0 &&
+          {loading?<div className="w-full h-full flex items-center justify-center"><CircularProgress/></div>:
+          messages.length > 0 &&
             messages.map((message, index) =>
               message.sender === currentUser.uid ? (
                 <div key={index} className="message1">
@@ -133,7 +139,7 @@ const UserChat = () => {
             )}
         </div>
       </div>
-      <div className="sendMessage bg-white flex items-center h-16">
+      <div className="sendMessage bg-[#EDF2F4] flex items-center h-16">
         <div className="input flex items-center w-full mx-3 h-full ">
           <TextField
             onKeyDown={handleClick}

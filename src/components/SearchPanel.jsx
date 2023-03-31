@@ -85,7 +85,7 @@ const [activeId,setActiveId]=useState("");
   });
 
   return (
-    <div className="m-2 searchpanel">
+    <div className="m-2 searchpanel ">
       <TextField
         fullWidth
         id="outlined-search"
